@@ -42,3 +42,52 @@ void print_hash_table(Node** map, int m) {
         printf("\n");
     }
 }
+
+//retorna o numero em vetor
+int* parse_int_to_vector (int n) {
+    int* key = (int*)malloc(sizeof(int) * KEYSZ);
+    memset(key, 0x00, sizeof(int) * KEYSZ); 
+
+    int i = KEYSZ - 1;
+    while (1) {
+        int q, mod;
+        mod = n % 10;
+        n = n / 10;
+        key[i--] = mod;
+        
+        if (n < 10) 
+        {
+            key[i] = n;
+            break;
+        }
+    }
+    return key;
+}
+
+int new_address (int* key) {
+        int j=0, k=1, address, tam = KEYSZ;
+
+        while (tam > FOLDING) {
+            // 8 4 3 1 5 9
+            int a, b;
+            a = key[j];
+            b = key[k];            
+            key[j + FOLDING + 1] += a;
+            key[k + FOLDING - 1] += b;
+
+            if (key[j + FOLDING + 1] > 10) {
+                int q = key[j + FOLDING + 1] % 10;
+                key[j + FOLDING + 1] = q;
+            }
+
+            if (key[k + FOLDING - 1] > 10) {
+                int q = key[k + FOLDING - 1] % 10;
+                key[k + FOLDING - 1] = q;
+            }
+            j += FOLDING ;
+            k += FOLDING ;
+            tam -= 2;
+        }
+        address = key[KEYSZ - 1] + key[KEYSZ - 2] * 10;
+    return address;
+}
